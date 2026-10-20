@@ -98,7 +98,7 @@ resource "aws_s3_object" "site" {
   # under local.site_dir, at any depth.
   # Hint: fileset() walks a directory at plan time and returns relative
   # paths ("index.html", "assets/logo.svg"). "**" matches at any depth.
-  for_each = <FILL_IN>
+  for_each = fileset("${local.site_dir}", "**")
 
   bucket       = aws_s3_bucket.main.id
   key          = each.value
@@ -113,7 +113,7 @@ resource "aws_s3_object" "site" {
   # An ETag is S3's checksum of the object's contents. Setting it to a hash
   # of the local file is what makes a content change show up as a diff.
   # Hint: filemd5() takes a path and returns that file's MD5.
-  etag = <FILL_IN>
+  etag = filemd5("${local.site_dir}/${each.value}")
 }
 
 output "website_url" {

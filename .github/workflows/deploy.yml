@@ -5,7 +5,7 @@ name: Deploy site
 on:
   # Landing on the default branch is what should actually deploy.
   push:
-    branches: [<FILL_IN>]
+    branches: [main]
   # A pull request should get a plan and nothing more, so a reviewer can see
   # what merging *would* change before it changes anything.
   pull_request:
@@ -29,7 +29,7 @@ jobs:
         # Every `run` step below starts in this directory, so you don't have
         # to repeat `cd` in each one. Terraform only works if it's run from
         # the directory holding the .tf files.
-        working-directory: <FILL_IN>
+        working-directory: ./terraform
 
     steps:
       - name: Check out the repo
@@ -54,8 +54,8 @@ jobs:
           # Secrets are referenced as ${{ secrets.NAME }} — note that this
           # is the only place in the repo a credential may appear, and that
           # GitHub masks these values if a step ever prints one.
-          aws-access-key-id: <FILL_IN>
-          aws-secret-access-key: <FILL_IN>
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       - name: terraform init
         # No arguments needed: backend.tf has the state bucket in it, so the
@@ -76,15 +76,15 @@ jobs:
         # — that's the whole point of the step.
         # Hint: you want the plan to fail the job rather than sit waiting for
         # someone to type "yes"; there's no terminal here.
-        run: <FILL_IN>
+        run: terraform plan -input=false
 
       - name: terraform apply
         # Only a real merge to the default branch should touch AWS. A pull
         # request from a fork must never be able to apply.
         # Hint: the context you need is `github.event_name` and `github.ref`
         # (a branch ref looks like `refs/heads/main`).
-        if: <FILL_IN>
+        if: github.event_name == "push" && github.ref == "refs/heads/main"
         run: |
-          <FILL_IN>
+          terraform apply
           echo "### Deployed :rocket:" >> "$GITHUB_STEP_SUMMARY"
           echo "$(terraform output -raw website_url)" >> "$GITHUB_STEP_SUMMARY"
