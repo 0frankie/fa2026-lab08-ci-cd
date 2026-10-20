@@ -10,7 +10,7 @@ Like Labs 06 and 07, this runs against a **real AWS account**. The resources are
 
 ## Setup
 
-- **[Terraform CLI](https://developer.hashicorp.com/terraform/install)** — `brew install terraform`. Needs **1.11 or newer** (where the S3 backend's built-in state locking went GA); check with `terraform version`.
+- **[Terraform CLI](https://developer.hashicorp.com/terraform/install)** — `brew tap hashicorp/tap; brew install hashicorp/tap/terraform`. Needs **1.11 or newer** (where the S3 backend's built-in state locking went GA); check with `terraform version`.
 - **[AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)** — `brew install awscli`.
 - **[GitHub CLI](https://cli.github.com/)** (optional but handy) — `brew install gh`, then `gh auth login`. Everything below also works in the web UI.
 - A GitHub account and **a repository you own** (see below).
