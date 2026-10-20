@@ -84,7 +84,7 @@ jobs:
         # request from a fork must never be able to apply.
         # Hint: the context you need is `github.event_name` and `github.ref`
         # (a branch ref looks like `refs/heads/main`).
-        if: github.event_name == "push" && github.ref == "refs/heads/main"
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
           terraform apply -auto-approve -input=false
           echo "### Deployed :rocket:" >> "$GITHUB_STEP_SUMMARY"
