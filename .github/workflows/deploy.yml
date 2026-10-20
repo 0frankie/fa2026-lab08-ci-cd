@@ -1,0 +1,90 @@
+name: Deploy site
+
+# TODO: fill in the blanks marked <FILL_IN> below. See Part D of the README.
+
+on:
+  # Landing on the default branch is what should actually deploy.
+  push:
+    branches: [<FILL_IN>]
+  # A pull request should get a plan and nothing more, so a reviewer can see
+  # what merging *would* change before it changes anything.
+  pull_request:
+
+# Already filled in for you — but understand why it's here before moving on.
+# What happens if we switch this on?
+concurrency:
+  group: deploy-site
+  cancel-in-progress: false
+
+env:
+  AWS_REGION: us-east-1
+
+jobs:
+  terraform:
+    name: Plan / Apply
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        # Every `run` step below starts in this directory, so you don't have
+        # to repeat `cd` in each one. Terraform only works if it's run from
+        # the directory holding the .tf files.
+        working-directory: <FILL_IN>
+
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          # In a real pipeline you'd pin an exact version here so a new
+          # Terraform release can't change your deploys without a commit.
+          terraform_version: latest
+          # The action normally wraps the terraform binary in a script that
+          # reformats its output; that gets in the way of `terraform output
+          # -raw` below, so turn it off.
+          terraform_wrapper: false
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          # Pull these from the repository secrets you added in Part C.
+          # Secrets are referenced as ${{ secrets.NAME }} — note that this
+          # is the only place in the repo a credential may appear, and that
+          # GitHub masks these values if a step ever prints one.
+          aws-access-key-id: <FILL_IN>
+          aws-secret-access-key: <FILL_IN>
+
+      - name: terraform init
+        # No arguments needed: backend.tf has the state bucket in it, so the
+        # runner finds the same state you've been applying against locally.
+        run: terraform init
+
+      - name: terraform fmt
+        # A cheap check that costs nothing and catches sloppy commits. `-check`
+        # makes it fail instead of rewriting files; `-recursive` covers
+        # subdirectories.
+        run: terraform fmt -check -recursive
+
+      - name: terraform validate
+        run: terraform validate
+
+      - name: terraform plan
+        # Show what this commit would change. This runs on pull requests too
+        # — that's the whole point of the step.
+        # Hint: you want the plan to fail the job rather than sit waiting for
+        # someone to type "yes"; there's no terminal here.
+        run: <FILL_IN>
+
+      - name: terraform apply
+        # Only a real merge to the default branch should touch AWS. A pull
+        # request from a fork must never be able to apply.
+        # Hint: the context you need is `github.event_name` and `github.ref`
+        # (a branch ref looks like `refs/heads/main`).
+        if: <FILL_IN>
+        run: |
+          <FILL_IN>
+          echo "### Deployed :rocket:" >> "$GITHUB_STEP_SUMMARY"
+          echo "$(terraform output -raw website_url)" >> "$GITHUB_STEP_SUMMARY"

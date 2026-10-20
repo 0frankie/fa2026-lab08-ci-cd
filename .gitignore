@@ -1,0 +1,15 @@
+.DS_Store
+
+terraform/.terraform/
+terraform/.terraform.lock.hcl
+terraform/*.tfplan
+
+# Local state. After Part B this should be empty anyway — state lives in S3
+# — but never commit it: it's a full record of your infrastructure, and
+# Terraform writes resource attributes into it verbatim.
+terraform/terraform.tfstate
+terraform/terraform.tfstate.backup
+terraform/.terraform.tfstate.lock.info
+
+# Instructor copies
+solution/
