@@ -17,14 +17,14 @@ terraform {
     # Terraform.
 
     # The state bucket you created, e.g. "lab09-<your-pennkey>-tfstate".
-    bucket = <FILL_IN>
+    bucket = "lab09-flin0-tfstate"
 
     # Path to the state file inside that bucket, e.g.
     # "lab-09/terraform.tfstate". One bucket can hold the state of many
     # projects, kept apart by this key.
-    key = <FILL_IN>
+    key = "lab-09/terraform.tfstate"
 
-    region = "us-east-1"
+    region       = "us-east-1"
     use_lockfile = true
   }
 }
