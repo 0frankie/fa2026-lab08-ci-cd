@@ -5,4 +5,4 @@
 # reach the runner, but must never be in a file like this one.
 
 # Pick something globally unique, e.g. "lab09-<your-pennkey>-website".
-bucket_name = <FILL_IN>
+bucket_name = "lab09-flin0-website"
