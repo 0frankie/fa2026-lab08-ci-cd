@@ -9,6 +9,7 @@ on:
   # A pull request should get a plan and nothing more, so a reviewer can see
   # what merging *would* change before it changes anything.
   pull_request:
+    branches: [main]
 
 # Already filled in for you — but understand why it's here before moving on.
 # What happens if we switch this on?
@@ -85,6 +86,6 @@ jobs:
         # (a branch ref looks like `refs/heads/main`).
         if: github.event_name == "push" && github.ref == "refs/heads/main"
         run: |
-          terraform apply
+          terraform apply -auto-approve -input=false
           echo "### Deployed :rocket:" >> "$GITHUB_STEP_SUMMARY"
           echo "$(terraform output -raw website_url)" >> "$GITHUB_STEP_SUMMARY"
